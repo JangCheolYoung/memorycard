@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>기억력 향상 숫자카드 게임</title>
+    <script src="https://ads-partners.coupang.com/g.js"></script>
 
     <style>
         * {
@@ -202,12 +203,12 @@
         }
         
         .ad-container {
-            margin: 25px 0;
+            margin: 20px 0;
             padding: 20px;
             background: rgba(255,255,255,0.1);
             border-radius: 15px;
             border: 2px dashed rgba(255,255,255,0.3);
-            backdrop-filter: blur(10px);
+            position: relative;
         }
         
         .ad-notice {
@@ -219,31 +220,28 @@
         }
         
         .coupang-banner {
-    width: 100%;
-    height: 150px;
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            color: #333;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
         
-        .coupang-banner iframe {
-            max-width: 100%;
-            border-radius: 8px;
+        .coupang-banner > * {
+            position: relative;
+            z-index: 1;
         }
         
         @media (max-width: 480px) {
-            .ad-container {
-                margin: 20px 0;
-                padding: 15px;
-            }
-            
             .coupang-banner {
-                padding: 10px;
-                min-height: 160px;
+                padding: 5px;
+                min-height: 120px;
             }
         }
         
@@ -292,7 +290,6 @@
             <!-- 시작 화면 쿠팡 광고 -->
             <div class="ad-container">
                 <p class="ad-notice">아래 광고는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
-                <script src="https://ads-partners.coupang.com/g.js"></script>
                 <div class="coupang-banner" id="startCoupangBanner">
                     <!-- 쿠팡 파트너스 배너가 여기에 삽입됩니다 -->
                 </div>
@@ -312,7 +309,7 @@
                 </div>
                 <div class="info-item">
                     <div class="info-label">남은 시간</div>
-                    <div class="info-value" id="timeLeft">30</div>
+                    <div class="info-value" id="timeLeft">10</div>
                 </div>
             </div>
             
@@ -334,7 +331,6 @@
             <!-- 쿠팡 파트너스 광고 영역 -->
             <div class="ad-container">
                 <p class="ad-notice">아래 광고는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
-                <script src="https://ads-partners.coupang.com/g.js"></script>
                 <div class="coupang-banner" id="coupangBanner">
                     <!-- 쿠팡 파트너스 배너가 여기에 삽입됩니다 -->
                 </div>
@@ -355,17 +351,47 @@
                 this.matchedPairs = 0;
                 this.totalPairs = 0;
                 this.timer = null;
-                this.timeLeft = 30;
+                this.timeLeft = 10;
                 this.memorizeTime = 0;
                 this.gameActive = false;
+                this.maxTime = 10;
+            }
+            
+            // 레벨 설정을 동적으로 생성
+            getLevelConfig(level) {
+                let rows, cols, memorizeTime, guessTime;
                 
-                this.levels = [
-                    { rows: 2, cols: 2, memorizeTime: 3000 },
-                    { rows: 2, cols: 3, memorizeTime: 4000 },
-                    { rows: 3, cols: 4, memorizeTime: 6000 },
-                    { rows: 4, cols: 5, memorizeTime: 8000 },
-                    { rows: 5, cols: 6, memorizeTime: 10000 }
-                ];
+                if (level <= 5) {
+                    // 초기 5레벨
+                    const configs = [
+                        { rows: 2, cols: 2, memorizeTime: 3000, guessTime: 10 },
+                        { rows: 2, cols: 3, memorizeTime: 4000, guessTime: 20 },
+                        { rows: 3, cols: 4, memorizeTime: 6000, guessTime: 30 },
+                        { rows: 4, cols: 5, memorizeTime: 8000, guessTime: 40 },
+                        { rows: 5, cols: 6, memorizeTime: 10000, guessTime: 50 }
+                    ];
+                    return configs[level - 1];
+                } else {
+                    // 6레벨 이후 동적 확장
+                    const baseLevel = level - 5;
+                    
+                    // 카드 수를 점진적으로 증가
+                    const totalCards = 30 + (baseLevel * 2); // 6레벨부터 32장, 34장, 36장...
+                    
+                    // 가로세로 비율을 적절히 조정
+                    cols = Math.ceil(Math.sqrt(totalCards * 1.5));
+                    rows = Math.ceil(totalCards / cols);
+                    
+                    // 짝수 개수로 맞춤
+                    if ((rows * cols) % 2 !== 0) {
+                        rows += 1;
+                    }
+                    
+                    memorizeTime = Math.min(15000, 10000 + (baseLevel * 1000)); // 최대 15초
+                    guessTime = Math.min(120, 50 + (baseLevel * 10)); // 최대 120초
+                    
+                    return { rows, cols, memorizeTime, guessTime };
+                }
             }
             
             generateCards(rows, cols) {
@@ -426,17 +452,15 @@
             }
             
             startLevel() {
-                const levelConfig = this.levels[this.level - 1];
-                if (!levelConfig) {
-                    this.endGame();
-                    return;
-                }
+                const levelConfig = this.getLevelConfig(this.level);
                 
                 this.cards = this.generateCards(levelConfig.rows, levelConfig.cols);
                 this.matchedPairs = 0;
                 this.flippedCards = [];
                 this.currentPhase = 'memorize';
                 this.memorizeTime = levelConfig.memorizeTime;
+                this.maxTime = levelConfig.guessTime;
+                this.timeLeft = this.maxTime;
                 
                 this.updateUI();
                 this.renderCards();
@@ -480,7 +504,6 @@
             
             startGuessPhase() {
                 this.currentPhase = 'guess';
-                this.timeLeft = 30;
                 this.hideAllCards();
                 this.updateUI();
                 
@@ -494,7 +517,7 @@
                 
                 this.timer = setInterval(() => {
                     this.timeLeft--;
-                    const progress = this.timeLeft / 30;
+                    const progress = this.timeLeft / this.maxTime;
                     timerFill.style.width = `${progress * 100}%`;
                     
                     document.getElementById('timeLeft').textContent = this.timeLeft;
@@ -567,11 +590,7 @@
                 this.level++;
                 
                 setTimeout(() => {
-                    if (this.level <= this.levels.length) {
-                        this.startLevel();
-                    } else {
-                        this.endGame();
-                    }
+                    this.startLevel();
                 }, 1500);
             }
             
@@ -589,7 +608,9 @@
                 document.getElementById('finalLevel').textContent = this.level;
                 
                 // 게임 종료 화면 쿠팡 파트너스 배너 로드
-                this.loadCoupangBanner('coupangBanner');
+                setTimeout(() => {
+                    this.loadCoupangBanner('coupangBanner');
+                }, 100);
             }
             
             updateUI() {
@@ -599,28 +620,49 @@
             }
             
             loadCoupangBanner(containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-
-    container.innerHTML = '';
-
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.async = true;
-    script.innerHTML = `
-        new PartnersCoupang.G({
-            id: 888881,
-            template: 'carousel',
-            trackingCode: 'AF1779873',
-            width: '100%',
-            height: '150',
-            tsource: ''
-        });
-    `;
-
-    container.appendChild(script);}
-
-            
+                const bannerContainer = document.getElementById(containerId);
+                if (!bannerContainer) return;
+                
+                // 기존 배너 제거
+                bannerContainer.innerHTML = '';
+                
+                // 쿠팡 파트너스 스크립트가 로드되었는지 확인
+                if (typeof PartnersCoupang !== 'undefined' && PartnersCoupang.G) {
+                    try {
+                        // 반응형 크기 계산
+                        const isMobile = window.innerWidth <= 480;
+                        const bannerWidth = isMobile ? 300 : 370;
+                        const bannerHeight = isMobile ? 140 : 160;
+                        
+                        // 쿠팡 파트너스 배너 생성
+                        const bannerElement = document.createElement('div');
+                        bannerContainer.appendChild(bannerElement);
+                        
+                        new PartnersCoupang.G({
+                            "id": 888881,
+                            "template": "carousel",
+                            "trackingCode": "AF1779873",
+                            "width": 320,
+                            "height": 150,
+                            "tsource": ""
+                        });
+                        
+                        // 배너가 컨테이너 안에 생성되도록 보장
+                        setTimeout(() => {
+                            const coupangFrame = document.querySelector('iframe[src*="coupang"]');
+                            if (coupangFrame && !bannerContainer.contains(coupangFrame)) {
+                                bannerContainer.appendChild(coupangFrame);
+                            }
+                        }, 500);
+                        
+                    } catch (error) {
+                        console.log('쿠팡 배너 로드 실패:', error);
+                        bannerContainer.innerHTML = '<p style="color: #666;">광고 로딩 중...</p>';
+                    }
+                } else {
+                    bannerContainer.innerHTML = '<p style="color: #666;">광고 로딩 중...</p>';
+                }
+            }
         }
         
         const game = new MemoryGame();
@@ -640,7 +682,8 @@
             // 게임 리셋
             game.level = 1;
             game.score = 0;
-            game.timeLeft = 30;
+            game.timeLeft = 10;
+            game.maxTime = 10;
             game.matchedPairs = 0;
             game.flippedCards = [];
             game.currentPhase = 'memorize';
@@ -652,22 +695,14 @@
             // 시작 화면 쿠팡 배너 다시 로드
             setTimeout(() => {
                 game.loadCoupangBanner('startCoupangBanner');
-            }, 300);
+            }, 100);
         }
         
         // 페이지 로드 시 시작 화면 쿠팡 배너 로드
         window.addEventListener('load', () => {
-            // 쿠팡 스크립트 로드 대기
             setTimeout(() => {
-                if (typeof PartnersCoupang !== 'undefined') {
-                    game.loadCoupangBanner('startCoupangBanner');
-                } else {
-                    // 스크립트가 아직 로드되지 않았다면 더 기다림
-                    setTimeout(() => {
-                        game.loadCoupangBanner('startCoupangBanner');
-                    }, 2000);
-                }
-            }, 1500);
+                game.loadCoupangBanner('startCoupangBanner');
+            }, 1000);
         });
         
         // 터치 이벤트 개선
@@ -676,7 +711,7 @@
         // 화면 크기 변경시 카드 그리드 재조정
         window.addEventListener('resize', () => {
             if (game.gameActive) {
-                const levelConfig = game.levels[game.level - 1];
+                const levelConfig = game.getLevelConfig(game.level);
                 if (levelConfig) {
                     game.createCardGrid(levelConfig.rows, levelConfig.cols);
                 }
