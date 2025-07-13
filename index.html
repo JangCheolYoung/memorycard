@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>기억력 향상 숫자카드 게임</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4991306147522322"
-     crossorigin="anonymous"></script>
+
     <style>
         * {
             margin: 0;
@@ -210,6 +209,26 @@
             border: 2px dashed rgba(255,255,255,0.3);
         }
         
+        .ad-notice {
+            font-size: 0.8em;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 15px;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        .coupang-banner {
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            color: #333;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
         .hidden {
             display: none;
         }
@@ -285,14 +304,16 @@
             <div class="final-score" id="finalScore">0점</div>
             <p>레벨 <span id="finalLevel">1</span>까지 도달했습니다!</p>
             
-            <!-- 광고 영역 -->
+            <!-- 쿠팡 파트너스 광고 영역 -->
             <div class="ad-container">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-4991306147522322"
-                     data-ad-slot="1234567890"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
+                <p class="ad-notice">아래 광고는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+                <div class="coupang-banner" id="coupangBanner">
+                    <!-- 쿠팡 파트너스 배너가 여기에 삽입됩니다 -->
+                     <script src="https://ads-partners.coupang.com/g.js"></script>
+                    <script>
+                        new PartnersCoupang.G({"id":888881,"template":"carousel","trackingCode":"AF1779873","width":"680","height":"140","tsource":""});
+                    </script>
+                </div>
             </div>
             
             <button class="restart-btn" onclick="restartGame()">다시 시작</button>
@@ -543,11 +564,10 @@
                 document.getElementById('finalScore').textContent = `${this.score}점`;
                 document.getElementById('finalLevel').textContent = this.level;
                 
-                // 광고 로드
-                try {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                } catch (e) {
-                    console.log('AdSense not available');
+                // 쿠팡 파트너스 배너 로드 (배너 코드를 여기에 삽입하세요)
+                const bannerContainer = document.getElementById('coupangBanner');
+                if (bannerContainer) {
+                    bannerContainer.innerHTML = '쿠팡 파트너스 배너를 여기에 삽입해주세요';
                 }
             }
             
