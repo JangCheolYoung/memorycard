@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>기억력 향상 숫자카드 게임</title>
-    <script src="https://ads-partners.coupang.com/g.js"></script>
+    <!-- <script src="https://ads-partners.coupang.com/g.js"></script> -->
 
     <style>
         * {
@@ -289,9 +289,13 @@
             
             <!-- 시작 화면 쿠팡 광고 -->
             <div class="ad-container">
-                <p class="ad-notice">아래 광고는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+                <p class="ad-notice">아래 광고는 쿠팡 파트너스 활동의 일환으로,<br> 이에 따른 일정액의 수수료를 제공받습니다.</p>
                 <div class="coupang-banner" id="startCoupangBanner">
                     <!-- 쿠팡 파트너스 배너가 여기에 삽입됩니다 -->
+                     <script src="https://ads-partners.coupang.com/g.js"></script>
+<script>
+	new PartnersCoupang.G({"id":888881,"template":"carousel","trackingCode":"AF1779873","width":"320","height":"150","tsource":""});
+</script>
                 </div>
             </div>
         </div>
@@ -330,9 +334,13 @@
             
             <!-- 쿠팡 파트너스 광고 영역 -->
             <div class="ad-container">
-                <p class="ad-notice">아래 광고는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
+                <p class="ad-notice">아래 광고는 쿠팡 파트너스 활동의 일환으로,<br> 이에 따른 일정액의 수수료를 제공받습니다.</p>
                 <div class="coupang-banner" id="coupangBanner">
                     <!-- 쿠팡 파트너스 배너가 여기에 삽입됩니다 -->
+                     <script src="https://ads-partners.coupang.com/g.js"></script>
+<script>
+	new PartnersCoupang.G({"id":888881,"template":"carousel","trackingCode":"AF1779873","width":"320","height":"150","tsource":""});
+</script>
                 </div>
             </div>
             
@@ -608,9 +616,9 @@
                 document.getElementById('finalLevel').textContent = this.level;
                 
                 // 게임 종료 화면 쿠팡 파트너스 배너 로드
-                setTimeout(() => {
-                    this.loadCoupangBanner('coupangBanner');
-                }, 100);
+                // setTimeout(() => {
+                //     this.loadCoupangBanner('coupangBanner');
+                // }, 100);
             }
             
             updateUI() {
@@ -619,50 +627,50 @@
                 document.getElementById('timeLeft').textContent = this.timeLeft;
             }
             
-            loadCoupangBanner(containerId) {
-                const bannerContainer = document.getElementById(containerId);
-                if (!bannerContainer) return;
+            // loadCoupangBanner(containerId) {
+            //     const bannerContainer = document.getElementById(containerId);
+            //     if (!bannerContainer) return;
                 
-                // 기존 배너 제거
-                bannerContainer.innerHTML = '';
+            //     // 기존 배너 제거
+            //     bannerContainer.innerHTML = '';
                 
-                // 쿠팡 파트너스 스크립트가 로드되었는지 확인
-                if (typeof PartnersCoupang !== 'undefined' && PartnersCoupang.G) {
-                    try {
-                        // 반응형 크기 계산
-                        const isMobile = window.innerWidth <= 480;
-                        const bannerWidth = isMobile ? 300 : 370;
-                        const bannerHeight = isMobile ? 140 : 160;
+            //     // 쿠팡 파트너스 스크립트가 로드되었는지 확인
+            //     if (typeof PartnersCoupang !== 'undefined' && PartnersCoupang.G) {
+            //         try {
+            //             // 반응형 크기 계산
+            //             const isMobile = window.innerWidth <= 480;
+            //             const bannerWidth = isMobile ? 300 : 370;
+            //             const bannerHeight = isMobile ? 140 : 160;
                         
-                        // 쿠팡 파트너스 배너 생성
-                        const bannerElement = document.createElement('div');
-                        bannerContainer.appendChild(bannerElement);
+            //             // 쿠팡 파트너스 배너 생성
+            //             const bannerElement = document.createElement('div');
+            //             bannerContainer.appendChild(bannerElement);
                         
-                        new PartnersCoupang.G({
-                            "id": 888881,
-                            "template": "carousel",
-                            "trackingCode": "AF1779873",
-                            "width": 320,
-                            "height": 150,
-                            "tsource": ""
-                        });
+            //             new PartnersCoupang.G({
+            //                 "id": 888881,
+            //                 "template": "carousel",
+            //                 "trackingCode": "AF1779873",
+            //                 "width": 320,
+            //                 "height": 150,
+            //                 "tsource": ""
+            //             });
                         
-                        // 배너가 컨테이너 안에 생성되도록 보장
-                        setTimeout(() => {
-                            const coupangFrame = document.querySelector('iframe[src*="coupang"]');
-                            if (coupangFrame && !bannerContainer.contains(coupangFrame)) {
-                                bannerContainer.appendChild(coupangFrame);
-                            }
-                        }, 500);
+            //             // 배너가 컨테이너 안에 생성되도록 보장
+            //             setTimeout(() => {
+            //                 const coupangFrame = document.querySelector('iframe[src*="coupang"]');
+            //                 if (coupangFrame && !bannerContainer.contains(coupangFrame)) {
+            //                     bannerContainer.appendChild(coupangFrame);
+            //                 }
+            //             }, 500);
                         
-                    } catch (error) {
-                        console.log('쿠팡 배너 로드 실패:', error);
-                        bannerContainer.innerHTML = '<p style="color: #666;">광고 로딩 중...</p>';
-                    }
-                } else {
-                    bannerContainer.innerHTML = '<p style="color: #666;">광고 로딩 중...</p>';
-                }
-            }
+            //         } catch (error) {
+            //             console.log('쿠팡 배너 로드 실패:', error);
+            //             bannerContainer.innerHTML = '<p style="color: #666;">광고 로딩 중...</p>';
+            //         }
+            //     } else {
+            //         bannerContainer.innerHTML = '<p style="color: #666;">광고 로딩 중...</p>';
+            //     }
+            // }
         }
         
         const game = new MemoryGame();
@@ -693,17 +701,17 @@
             }
             
             // 시작 화면 쿠팡 배너 다시 로드
-            setTimeout(() => {
-                game.loadCoupangBanner('startCoupangBanner');
-            }, 100);
+            // setTimeout(() => {
+            //     game.loadCoupangBanner('startCoupangBanner');
+            // }, 100);
         }
         
         // 페이지 로드 시 시작 화면 쿠팡 배너 로드
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                game.loadCoupangBanner('startCoupangBanner');
-            }, 1000);
-        });
+        // window.addEventListener('load', () => {
+        //     setTimeout(() => {
+        //         game.loadCoupangBanner('startCoupangBanner');
+        //     }, 1000);
+        // });
         
         // 터치 이벤트 개선
         document.addEventListener('touchstart', function() {}, {passive: true});
